@@ -10,4 +10,4 @@ ToDo{
 	completed?,
 
 }
-Microsoft.AspNetCore.Authentication.JwtBearer
+dotnet ef migrations add Init -c AuthDbContext -o Migrations/Auth

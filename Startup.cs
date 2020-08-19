@@ -60,6 +60,7 @@ namespace ToDoApi
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
             
             services.AddSingleton<ITodoService, ToDoService> ();
+            services.AddTransient<JwtSettings>();
 
             services.AddCors(options =>
             {
