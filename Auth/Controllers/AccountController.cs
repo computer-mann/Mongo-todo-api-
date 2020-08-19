@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace ToDoApi.Auth.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterVm model)
+        public async Task<IActionResult> Register([FromBody]RegisterVm model)
         {
             if (!ModelState.IsValid) return BadRequest();
             var user=new AppUser(){Email=model.Email,UserName=model.Username};
@@ -30,16 +31,16 @@ namespace ToDoApi.Auth.Controllers
                 var againUser=await userManager.FindByEmailAsync(model.Email);
                 string token=jwtHelper.GenerateJwtToken(againUser.UserName,againUser.Id);
                 Response.Headers.Add("jwt-access-token", token);
-                return Ok();
+                return Ok("signed in");
             }else
             {
-                return BadRequest(new Message(){Report="Something Went Wrong."});
+                return BadRequest(result.Errors);
             }
             
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVm model)
+        public async Task<IActionResult> Login([FromBody]LoginVm model)
         {
             if (!ModelState.IsValid) return BadRequest();
             var user = await userManager.FindByNameAsync(model.Username);
@@ -49,10 +50,10 @@ namespace ToDoApi.Auth.Controllers
             {
                 string token=jwtHelper.GenerateJwtToken(user.UserName,user.Id);
                 Response.Headers.Add("jwt-access-token",token);
-                return Ok();
+                return Ok("signed in");
             }else
             {
-                return Unauthorized(new Message(){Report="Wrong Username or Password."});
+                return Unauthorized(new Message(){ Report="Wrong Username or Password."});
             }
         }
     }

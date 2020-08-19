@@ -19,6 +19,9 @@ using ToDoApi.Auth.Models.DbContexts;
 using ToDoApi.Infrastructure.Interfaces;
 using ToDoApi.Infrastructure.Settings;
 using ToDoApi.Services;
+using Microsoft.Extensions.Options;
+using ToDoApi.Infrastructure.Helper;
+using Microsoft.AspNetCore.Identity;
 
 namespace ToDoApi
 {
@@ -41,6 +44,14 @@ namespace ToDoApi
 
             services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<AuthDbContext>();
 
+            services.Configure<IdentityOptions>(options=>{
+                options.Password.RequiredLength = 3;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            });
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options=>{
                     options.TokenValidationParameters=new TokenValidationParameters()
@@ -60,7 +71,7 @@ namespace ToDoApi
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
             
             services.AddSingleton<ITodoService, ToDoService> ();
-            services.AddTransient<JwtSettings>();
+            services.AddTransient<JwtHelper>();
 
             services.AddCors(options =>
             {
@@ -69,6 +80,10 @@ namespace ToDoApi
             });
 
             services.AddControllers ();
+
+            services.AddRouting(options=>{
+                options.LowercaseUrls=true;
+            });
 
         }
 

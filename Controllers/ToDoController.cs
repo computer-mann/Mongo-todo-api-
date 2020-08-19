@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDoApi.Infrastructure.Interfaces;
 using ToDoApi.Models;
@@ -8,6 +9,7 @@ using ToDoApi.ViewModels;
 namespace ToDoApi.Controllers
 {
     [Route("[controller]/[action]")]
+    [Authorize]
     public class ToDoController : Controller
     {
         private readonly ITodoService service;
