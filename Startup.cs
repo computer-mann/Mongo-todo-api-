@@ -76,7 +76,8 @@ namespace ToDoApi
             services.AddCors(options =>
             {
                 options.AddPolicy(ToDoApiCorsPolicy,policy
-                    =>policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
+                    =>policy.WithOrigins("http://localhost:4200").AllowAnyMethod()
+                    .AllowAnyHeader().WithExposedHeaders("jwt-access-token"));
             });
 
             services.AddControllers ();

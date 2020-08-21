@@ -50,7 +50,7 @@ namespace ToDoApi.Auth.Controllers
             {
                 string token=jwtHelper.GenerateJwtToken(user.UserName,user.Id);
                 Response.Headers.Add("jwt-access-token",token);
-                return Ok("signed in");
+                return Ok(new Message(){ Report="signed in"});
             }else
             {
                 return Unauthorized(new Message(){ Report="Wrong Username or Password."});
