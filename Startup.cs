@@ -22,6 +22,7 @@ using ToDoApi.Services;
 using Microsoft.Extensions.Options;
 using ToDoApi.Infrastructure.Helper;
 using Microsoft.AspNetCore.Identity;
+using todoapi.Infrastructure.Extensions;
 
 namespace ToDoApi
 {
@@ -86,6 +87,8 @@ namespace ToDoApi
                 options.LowercaseUrls=true;
             });
 
+            services.AddMemoryCache();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,6 +101,7 @@ namespace ToDoApi
 
             app.UseHttpsRedirection ();
             app.UseCors(ToDoApiCorsPolicy);
+            app.UseCheckedLoggedOutTokens();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseRouting();
@@ -108,6 +112,13 @@ namespace ToDoApi
             {
                 endpoints.MapControllers ();
             });
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var service=scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+                service.FindByIdAsync("sas");
+            }
+
         }
     }
 }
