@@ -74,6 +74,17 @@ namespace ToDoApi.Controllers
             return Ok("d");
         }
 
+        [HttpGet("{objectId}")]
+        public async Task<IActionResult> GetById(string objectId)
+        {
+            if(string.IsNullOrEmpty(objectId)) return BadRequest(new ToSend(){Message="Provide Route Params"});
+
+            var todo =await service.GetOneById(objectId);
+            if(todo == null) return NotFound(new ToSend(){Message="Information Doesn't Exist"});
+
+            return Ok(todo);
+        }
+
     }
 
     class ToSend

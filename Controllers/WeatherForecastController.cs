@@ -28,6 +28,12 @@ namespace ToDoApi.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            
+           /*  foreach (var item in HttpContext.User.Claims)
+            {
+                _logger.LogWarning("{claimValue} - {type}",item.Value,item.Type);
+                
+            } */
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
