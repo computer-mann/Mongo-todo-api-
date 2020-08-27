@@ -10,16 +10,21 @@ namespace todoapi.Infrastructure.CustomMiddlewares
 {
     public class CheckLoggedOutJwtMiddleware
     {
-        public RequestDelegate Next { get; }
+        public RequestDelegate _next { get; }
         public CheckLoggedOutJwtMiddleware(RequestDelegate next)
         {
-            this.Next = next;
+            this._next = next;
 
         }
 
         public async Task InvokeAsync(HttpContext context,IMemoryCache cache,ILogger<CheckLoggedOutJwtMiddleware> logger)
         {
             string headers=context.Request.Headers["Authorization"];
+            if(string.IsNullOrEmpty(headers))
+            {
+                await _next(context);
+                return;
+            }
             var imme=headers.Split(" ");
             headers=imme[1];
             if(cache.Get(headers) != null)
@@ -30,7 +35,7 @@ namespace todoapi.Infrastructure.CustomMiddlewares
                 logger.LogWarning("{exevs}",context.Request.Headers["Authorization"]);
                 return;
             }
-            await Next(context);
+            await _next(context);
         }
     }
 }
